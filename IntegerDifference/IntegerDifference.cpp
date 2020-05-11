@@ -46,12 +46,12 @@ uint32_t lowlevel_difference_int32(int32_t i, int32_t j) {
 	// Leverages the wrap-around behaviour of unsigned integer types.
 	// Preserves the greater-than relation, such that zero
 	// is mapped to near the middle of the uint32_t number-line.
-	// It would be more intuitive to use addition rather than subtraction and to
-	// set the offset to (uint32_t)(-1 * INT32_MIN) but that multiplication
-	// overflows the signed integer type, causing undefined behaviour.
-	const uint32_t offset = (uint32_t)(INT32_MIN);
-	const uint32_t i_u = (uint32_t)i - offset;
-	const uint32_t j_u = (uint32_t)j - offset;
+	// It would be more intuitive to set the offset to (uint32_t)(-1 * INT32_MIN)
+	// but that multiplication overflows the signed integer type,
+	// causing undefined behaviour. We get the right effect subtracting from zero.
+	const uint32_t offset = (uint32_t)0 - (uint32_t)(INT32_MIN);
+	const uint32_t i_u = (uint32_t)i + offset;
+	const uint32_t j_u = (uint32_t)j + offset;
 
 #if 1
 	// Readable version:
@@ -105,7 +105,7 @@ uint32_t laborious_difference_int32(int32_t i, int32_t j)
 			greater_is_negative = false;
 		} else { // Here it follows that 'lesser' is also negative, but we'll keep the flow simple
 			// greater_magn = -i; // DANGEROUS, overflows if i == INT32_MIN.
-			greater_magn = (int32_t)0 - (int32_t)i;
+			greater_magn = (uint32_t)0 - (uint32_t)i;
 			greater_is_negative = true;
 		}
 
@@ -114,16 +114,16 @@ uint32_t laborious_difference_int32(int32_t i, int32_t j)
 			lesser_is_negative = false;
 		} else {
 			// lesser_magn = -j; // DANGEROUS, overflows if i == INT32_MIN.
-			lesser_magn = (int32_t)0 - (int32_t)j;
+			lesser_magn = (uint32_t)0 - (uint32_t)j;
 			lesser_is_negative = true;
 		}
 
-		// Finally compute the distance between lesser and greater
+		// Finally compute the difference between lesser and greater
 		if (!greater_is_negative && !lesser_is_negative) {
 			ret = greater_magn - lesser_magn;
 		} else if (greater_is_negative && lesser_is_negative) {
 			ret = lesser_magn - greater_magn;
-		} else { // One negative, one non-negative. Distance between them is sum of the magnitudes.
+		} else { // One negative, one non-negative. Difference between them is sum of the magnitudes.
 			// This looks like it may overflow, but it never will.
 			ret = lesser_magn + greater_magn;
 		}
