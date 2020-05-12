@@ -43,9 +43,11 @@ uint32_t lowlevel_difference_int32(int32_t i, int32_t j) {
 	);
 
 	// Map the signed values across to the number-line of uint32_t.
+	// Preserves the greater-than relation, such that an input of INT32_MIN
+	// is mapped to 0, and an input of 0 is mapped to near the middle
+	// of the uint32_t number-line.
 	// Leverages the wrap-around behaviour of unsigned integer types.
-	// Preserves the greater-than relation, such that zero
-	// is mapped to near the middle of the uint32_t number-line.
+
 	// It would be more intuitive to set the offset to (uint32_t)(-1 * INT32_MIN)
 	// but that multiplication overflows the signed integer type,
 	// causing undefined behaviour. We get the right effect subtracting from zero.
