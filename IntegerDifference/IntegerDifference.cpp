@@ -97,37 +97,37 @@ uint32_t laborious_difference_int32(int32_t i, int32_t j)
 			j = i_orig;
 		} // We may now safely assume i > j
 
-		uint32_t greater_magn; // The magnitude, i.e. abs()
+		uint32_t magn_of_greater; // The magnitude, i.e. abs()
 		bool     greater_is_negative; // Zero is of course non-negative
-		uint32_t lesser_magn;
+		uint32_t magn_of_lesser;
 		bool     lesser_is_negative;
 
 		if (i >= 0) {
-			greater_magn = i;
+			magn_of_greater = i;
 			greater_is_negative = false;
 		} else { // Here it follows that 'lesser' is also negative, but we'll keep the flow simple
-			// greater_magn = -i; // DANGEROUS, overflows if i == INT32_MIN.
-			greater_magn = (uint32_t)0 - (uint32_t)i;
+			// magn_of_greater = -i; // DANGEROUS, overflows if i == INT32_MIN.
+			magn_of_greater = (uint32_t)0 - (uint32_t)i;
 			greater_is_negative = true;
 		}
 
 		if (j >= 0) {
-			lesser_magn = j;
+			magn_of_lesser = j;
 			lesser_is_negative = false;
 		} else {
-			// lesser_magn = -j; // DANGEROUS, overflows if i == INT32_MIN.
-			lesser_magn = (uint32_t)0 - (uint32_t)j;
+			// magn_of_lesser = -j; // DANGEROUS, overflows if i == INT32_MIN.
+			magn_of_lesser = (uint32_t)0 - (uint32_t)j;
 			lesser_is_negative = true;
 		}
 
 		// Finally compute the difference between lesser and greater
 		if (!greater_is_negative && !lesser_is_negative) {
-			ret = greater_magn - lesser_magn;
+			ret = magn_of_greater - magn_of_lesser;
 		} else if (greater_is_negative && lesser_is_negative) {
-			ret = lesser_magn - greater_magn;
+			ret = magn_of_lesser - magn_of_greater;
 		} else { // One negative, one non-negative. Difference between them is sum of the magnitudes.
 			// This looks like it may overflow, but it never will.
-			ret = lesser_magn + greater_magn;
+			ret = magn_of_lesser + magn_of_greater;
 		}
 	}
 	return ret;
