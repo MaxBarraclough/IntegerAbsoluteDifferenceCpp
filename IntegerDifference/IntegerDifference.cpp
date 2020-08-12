@@ -126,7 +126,7 @@ uint32_t laborious_difference_int32(int32_t i, int32_t j)
 		} else if (greater_is_negative && lesser_is_negative) {
 			ret = magn_of_lesser - magn_of_greater;
 		} else { // One negative, one non-negative. Difference between them is sum of the magnitudes.
-			// This looks like it may overflow, but it never will.
+			// This will never overflow.
 			ret = magn_of_lesser + magn_of_greater;
 		}
 	}
